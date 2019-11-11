@@ -1,0 +1,28 @@
+#!/usr/bin/env groovy
+pipeline {
+
+    agent any
+    triggers {
+        pollSCM "* * * * *"
+    }
+    options {
+        timestamps()
+    }
+    stages {
+        stage('Build & Test') {
+            steps {
+                sh './mvnw -Pprod clean verify sonar:sonar'
+            }
+        }
+        stage('Build Image') {
+            steps {
+                sh './mvnw -Pprod jib:dockerBuild'
+            }
+        }
+    }
+    post {
+        always {
+            deleteDir()
+        }
+    }
+}
