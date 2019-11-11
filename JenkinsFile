@@ -1,28 +1,37 @@
-#!/usr/bin/env groovy
 pipeline {
+   agent any
 
-    agent any
-    triggers {
-        pollSCM "* * * * *"
-    }
-    options {
-        timestamps()
-    }
-    stages {
-        stage('Build & Test') {
-            steps {
-                sh './mvnw -Pprod clean verify sonar:sonar'
-            }
-        }
+   tools {
+      // Install the Maven version configured as "M3" and add it to the path.
+      maven "M3"
+   }
+
+   stages {
+      stage('Build & Test') {
+         steps {
+            // Get some code from a GitHub repository
+            git 'https://github.com/ExitoLab/airline_emirates.git'
+
+            // Run Maven on a Unix agent.
+            sh './mvnw -Pprod clean verify sonar:sonar'
+
+            // To run Maven on a Windows agent, use
+            // bat "mvn -Dmaven.test.failure.ignore=true clean package"
+         }
+         
         stage('Build Image') {
             steps {
                 sh './mvnw -Pprod jib:dockerBuild'
             }
         }
-    }
-    post {
-        always {
-            deleteDir()
-        }
-    }
+
+         post {
+            // If Maven was able to run the tests, even if some of the test
+            // failed, record the test results and archive the jar file.
+            always {
+                deleteDir()
+            }
+         }
+      }
+   }
 }
