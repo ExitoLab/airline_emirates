@@ -2,8 +2,8 @@
     "variables" : {
         "region" : "us-west-2",
         "source_ami" : "ami-6f68cf0f",
-        "aws_access_key": "xxxxxxxxxxxxxxxxxx",
-        "aws_secret_key": "xxxxxxxxxxxxxxxxxxx"
+        "aws_access_key": "xxxxxxxxxxxxxxxxxxx",
+        "aws_secret_key": "xxxxxxxxxxxxxxxxxxxxxx"
     },
     "builders" : [
         {
@@ -15,7 +15,7 @@
             "instance_type" : "t2.micro",
             "source_ami" : "{{user `source_ami`}}",
             "ssh_username" : "ec2-user",
-            "ami_name" : "jenkins-master-2.107.2",
+            "ami_name" : "jenkins-master-",
             "ami_description" : "Amazon Linux Image with Jenkins Server",
             "run_tags" : {
                 "Name" : "packer-builder-docker"
